@@ -1,5 +1,4 @@
 from typing import Final
-
 from numpy import double
 
 SERVICE_BAD: Final = [0, 30, 40]
