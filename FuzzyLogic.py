@@ -1,10 +1,9 @@
-#Fuzzy Logic
-
 from ReadFile import readExcel
 
 
 def main():
-    readExcel()
+    df = readExcel()
+    print(df)
 
 if __name__ == "__main__":
     main()
