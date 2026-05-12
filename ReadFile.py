@@ -1,5 +1,5 @@
 import pandas as pd
 
-def readExcel():
+def readExcel() -> pd.DataFrame:
     df = pd.read_excel('restoran.xlsx')
-    print(df)
+    return df
