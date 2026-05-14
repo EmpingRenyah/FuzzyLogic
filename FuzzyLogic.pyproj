@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="Fuzzyfication.py" />
     <Compile Include="FuzzyLogic.py" />
+    <Compile Include="Defuzzification.py" />
     <Compile Include="ReadFile.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
