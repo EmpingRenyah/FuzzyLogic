@@ -1,54 +1,45 @@
 from numpy import double
 
-badExist = bool
-avgExist = bool
-goodExist = bool
+# Nilai crisp output untuk tiap kategori rekomendasi
+SCORE_RENDAH = 30   # tidak direkomendasikan
+SCORE_SEDANG = 60   # so so
+SCORE_TINGGI = 90   # sangat direkomendasikan
 
-cheapExist = bool
-expensiveExist = bool
 
-def checkExistence(price, quality):
-    global badExist, avgExist, goodExist, cheapExist, expensiveExist
-    badExist = quality[0] > 0.0
-    avgExist = quality[1] > 0.0
-    goodExist = quality[2] > 0.0
-    cheapExist = price[0] > 0.0
-    expensiveExist = price[1] > 0.0
+def applyRules(price, quality) -> list[tuple]:
+    cheap,     expensive = price
+    bad,  avg, good      = quality
 
-def applyRules(price, quality) -> list[double]:
-    checkExistence(price, quality)
-    
-    recommend = 0.0
-    notRecommend = 0.0
+    rules_fired = []
 
     # Rule 1: Bad & Cheap = Not Recommended
-    if badExist and cheapExist:
-        val = min(quality[0], price[0])
-        notRecommend = max(notRecommend, val)
+    alpha = min(quality[0], price[0])
+    if alpha > 0:
+        rules_fired.append((alpha, SCORE_RENDAH))
 
     # Rule 2: Bad & Expensive = Not Recommended
-    if badExist and expensiveExist:
-        val = min(quality[0], price[1])
-        notRecommend = max(notRecommend, val)
+    alpha = min(quality[0], price[1])
+    if alpha > 0:
+        rules_fired.append((alpha, SCORE_RENDAH))
 
     # Rule 3: Avg & Cheap = Recommended
-    if avgExist and cheapExist:
-        val = min(quality[1], price[0])
-        recommend = max(recommend, val)
+    alpha = min(quality[1], price[0])
+    if alpha > 0:
+        rules_fired.append((alpha, SCORE_SEDANG))
 
     # Rule 4: Avg & Expensive = Not Recommended
-    if avgExist and expensiveExist:
-        val = min(quality[1], price[1])
-        notRecommend = max(notRecommend, val)
+    alpha = min(quality[1], price[1])
+    if alpha > 0:
+        rules_fired.append((alpha, SCORE_RENDAH))
 
     # Rule 5: Good & Cheap = Recommended
-    if goodExist and cheapExist:
-        val = min(quality[2], price[0])
-        recommend = max(recommend, val)
+    alpha = min(quality[2], price[0])
+    if alpha > 0:
+        rules_fired.append((alpha, SCORE_TINGGI))
 
     # Rule 6: Good & Expensive = Recommended
-    if goodExist and expensiveExist:
-        val = min(quality[2], price[1])
-        recommend = max(recommend, val)
+    alpha = min(quality[2], price[1])
+    if alpha > 0:
+        rules_fired.append((alpha, SCORE_SEDANG))
 
-    return [recommend, notRecommend]    
+    return rules_fired
