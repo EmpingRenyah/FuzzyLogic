@@ -2,7 +2,7 @@ import pandas as pd
 from ReadFile import readExcel
 from Fuzzyfication import fuzzify_service, fuzzify_price
 from FuzzyRules import applyRules
-from Defuzzification import defuzzify, get_category
+from Defuzzification import defuzzify
 
 # Inisialisasi list hasil
 services_fuzzy = []
@@ -22,30 +22,23 @@ def main():
         services_fuzzy.append(service_fuzzy)
         prices_fuzzy.append(price_fuzzy)
 
-        # Inferensi (apply fuzzy rules)
-        rules_fired = applyRules(prices_fuzzy[index], services_fuzzy[index])
+        # Inferensi
+        recommendation = applyRules(price_fuzzy, service_fuzzy)
 
-        # Defuzzifikasi -> score crisp
-        score    = defuzzify(rules_fired)
-        category = get_category(score)
-
+        # Defuzzifikasi
+        score = defuzzify(recommendation)
         scores.append(score)
-        categories.append(category)
+        
+    #simpan ke dataframe
+    df['Score'] = scores
 
-    # Masukin ke DataFrame
-    df['Score']       = scores
-    df['Rekomendasi'] = categories
-
-    # Ambil 5 restoran terbaik berdasarkan score tertinggi
-    top5 = df.nlargest(5, 'Score')[['id Pelanggan', 'Pelayanan', 'harga', 'Score', 'Rekomendasi']]
+    top5 = df.nlargest(5, 'Score')[['id Pelanggan', 'Pelayanan', 'harga', 'Score']]
     top5 = top5.reset_index(drop=True)
-    top5.index += 1  # ranking mulai dari 1
+    top5.index += 1
 
-    # Tampilkan hasil di console
     print("=== 5 Restoran Terbaik ===")
     print(top5.to_string())
 
-    # Simpan ke file peringkat.xlsx
     output_path = 'peringkat.xlsx'
     top5.to_excel(output_path, index=True, index_label='Peringkat')
     print(f"\nHasil disimpan ke: {output_path}")
