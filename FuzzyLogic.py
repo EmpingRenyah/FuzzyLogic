@@ -32,7 +32,7 @@ def main():
     #simpan ke dataframe
     df['Score'] = scores
 
-    top5 = df.nlargest(5, 'Score')[['id Pelanggan', 'Pelayanan', 'harga', 'Score']]
+    top5 = df.nlargest(5, columns=['Score', 'Pelayanan'])[['id Pelanggan', 'Pelayanan', 'harga', 'Score']]
     top5 = top5.reset_index(drop=True)
     top5.index += 1
 

@@ -12,7 +12,7 @@ def centroid_defuzzification(universe, membership_values):
 
 def defuzzify(recommendation: list) -> float:
     # universe = [0, 1] → index 0 = notRecommend, index 1 = recommend
-    universe          = np.array([0, 1])
+    universe          = np.array([1, 0])
     membership_values = np.array(recommendation)  # [recommend, notRecommend]
 
-    return centroid_defuzzification(universe, membership_values)
+    return (centroid_defuzzification(universe, membership_values)*100)

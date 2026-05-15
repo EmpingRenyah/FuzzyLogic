@@ -1,5 +1,4 @@
 from typing import Final
-from numpy import double
 
 SERVICE_BAD:  Final = [0,  30, 40]
 SERVICE_AVG:  Final = [30, 40, 60, 70]
@@ -9,7 +8,7 @@ PRICE_CHEAP:     Final = [20000, 35000, 45000]
 PRICE_EXPENSIVE: Final = [30000, 40000, 60000]
 
 
-def fuzzify_service(service: int) -> list[double]:
+def fuzzify_service(service: int) -> list[float]:
     bad  = 0.0
     avg  = 0.0
     good = 0.0
@@ -37,20 +36,26 @@ def fuzzify_service(service: int) -> list[double]:
     return [bad, avg, good]
 
 
-def fuzzify_price(price: int) -> list[double]:
+def fuzzify_price(price: int) -> list[float]:
     cheap     = 0.0
     expensive = 0.0
 
-    # check for pure cheap (price < 30000)
-    if price < PRICE_EXPENSIVE[0]:
+    # Logic for the "Cheap" line 
+    if price <= PRICE_CHEAP[1]:
         cheap = 1.0
-    # check for pure expensive (price > 45000)
-    elif price > PRICE_CHEAP[2]:
-        expensive = 1.0
+    elif PRICE_CHEAP[1] < price <= PRICE_CHEAP[2]:
+        # Linear decrease: (x2 - x) / (x2 - x1)
+        cheap = (PRICE_CHEAP[2] - price) / (PRICE_CHEAP[2] - PRICE_CHEAP[1])
+    else:
+        cheap = 0.0
 
-    # transisi cheap -> expensive (price 35000-45000)
-    if price > PRICE_CHEAP[1] and price < PRICE_EXPENSIVE[0]:
-        cheap     = (PRICE_CHEAP[2] - price) / (PRICE_CHEAP[2] - PRICE_CHEAP[1])
+    # Logic for the "Expensive" line
+    if price <= PRICE_EXPENSIVE[0]:
+        expensive = 0.0
+    elif PRICE_EXPENSIVE[0] < price <= PRICE_EXPENSIVE[1]:
+        # Linear increase: (x - x1) / (x2 - x1)
         expensive = (price - PRICE_EXPENSIVE[0]) / (PRICE_EXPENSIVE[1] - PRICE_EXPENSIVE[0])
+    else:
+        expensive = 1.0
 
     return [cheap, expensive]
